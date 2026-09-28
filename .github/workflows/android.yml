@@ -1,27 +1,68 @@
-name: Android build
+name: Android build and release
 
 on:
   push:
+    branches: ["**"]
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish the APK to GitHub Releases
+        type: boolean
+        default: false
+      release_tag:
+        description: Release tag (required when publishing, for example v0.0.1)
+        type: string
+        default: v0.0.1
 
 permissions:
   contents: read
 
 concurrency:
   group: android-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' && github.ref_type != 'tag' }}
 
 jobs:
   build:
     name: Build and check debug APK
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    outputs:
+      release_tag: ${{ steps.release.outputs.tag }}
     steps:
       - name: Check out source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          fetch-depth: 0
+
+      - name: Validate release tag
+        id: release
+        env:
+          PUBLISH: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_release }}
+          INPUT_TAG: ${{ inputs.release_tag }}
+        shell: bash
+        run: |
+          tag=""
+          if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF_TYPE" == "tag" ]]; then
+            tag="$GITHUB_REF_NAME"
+          elif [[ "$PUBLISH" == "true" ]]; then
+            tag="$INPUT_TAG"
+          fi
+          if [[ -n "$tag" || "$PUBLISH" == "true" ]]; then
+            if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::Release tag must use vMAJOR.MINOR.PATCH."
+              exit 1
+            fi
+            if git show-ref --verify --quiet "refs/tags/$tag"; then
+              if [[ "$(git rev-parse "refs/tags/$tag^{commit}")" != "$(git rev-parse HEAD)" ]]; then
+                echo "::error::Release tag already points to a different commit."
+                exit 1
+              fi
+            fi
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Set up Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
@@ -80,3 +121,45 @@ jobs:
             app/build/reports/lint-results-debug.*
           if-no-files-found: ignore
           retention-days: 14
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: ${{ needs.build.outputs.release_tag != '' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    concurrency:
+      group: release-${{ needs.build.outputs.release_tag }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+    steps:
+      - name: Download verified build
+        env:
+          RUN_ID: ${{ github.run_id }}
+          ARTIFACT_NAME: BirdWatch-debug-${{ github.run_number }}
+        run: gh run download "$RUN_ID" --name "$ARTIFACT_NAME" --dir outputs
+
+      - name: Publish APK and checksum
+        shell: bash
+        run: |
+          cd outputs
+          sha256sum --check SHA256SUMS.txt
+          cat > release-notes.md <<'NOTES'
+          BirdWatch for Wear OS: offline, on-device bird sound recognition.
+
+          Download BirdWatch-debug.apk and install it on your watch using ADB.
+          SHA256SUMS.txt contains the download checksum.
+
+          This APK is debug-signed. Its signing key can differ from previous builds,
+          so installing it may require uninstalling the previous app first, which
+          removes that app's saved data.
+          NOTES
+          gh release create "$RELEASE_TAG" BirdWatch-debug.apk SHA256SUMS.txt \
+            --target "$GITHUB_SHA" --title "BirdWatch $RELEASE_TAG" \
+            --notes-file release-notes.md
