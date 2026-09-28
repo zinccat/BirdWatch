@@ -1,0 +1,82 @@
+name: Android build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and check debug APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle and dependency cache
+        uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          # yes exits with SIGPIPE once sdkmanager has consumed the answers.
+          set +o pipefail
+          yes | "$sdkmanager" --licenses > /dev/null
+          set -o pipefail
+          "$sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" "platform-tools"
+
+      - name: Build, run unit tests, and lint
+        run: >-
+          ./gradlew :app:assembleDebug :app:testDebugUnitTest
+          :app:lintDebug :app:assembleDebugAndroidTest
+          --no-daemon --console=plain -Pandroid.builder.sdkDownload=false
+
+      - name: Prepare APK and checksum
+        shell: bash
+        run: |
+          mkdir -p outputs
+          cp app/build/outputs/apk/debug/app-debug.apk outputs/BirdWatch-debug.apk
+          cd outputs
+          sha256sum BirdWatch-debug.apk > SHA256SUMS.txt
+
+      # This is a debug-signed APK, not a Play Store release. A fresh runner's
+      # debug key differs from local builds and may differ between workflow runs.
+      - name: Upload debug APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: BirdWatch-debug-${{ github.run_number }}
+          path: |
+            outputs/BirdWatch-debug.apk
+            outputs/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+      - name: Upload test and lint reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: BirdWatch-reports-${{ github.run_number }}
+          path: |
+            app/build/reports/tests/
+            app/build/test-results/
+            app/build/reports/lint-results-debug.*
+          if-no-files-found: ignore
+          retention-days: 14
