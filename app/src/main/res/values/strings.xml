@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_title" formatted="false">"BirdWatch"</string>
+    <string name="tagline" formatted="false">"Know the birds around you"</string>
+    <string name="start" formatted="false">"●  Start listening"</string>
+    <string name="offline" formatted="false">"Offline audio · Runs on device"</string>
+    <string name="history" formatted="false">"History"</string>
+    <string name="bird_language" formatted="false">"Bird names · "</string>
+    <string name="about" formatted="false">"About &amp; privacy"</string>
+    <string name="bird_language_title" formatted="false">"Bird name language"</string>
+    <string name="choose_names" formatted="false">"Bird names"</string>
+    <string name="names_hint" formatted="false">"Bird names are independent of the app language. Missing Chinese names use English."</string>
+    <string name="home" formatted="false">"Home"</string>
+    <string name="mic_permission" formatted="false">"Microphone permission"</string>
+    <string name="mic_required" formatted="false">"Allow microphone access"</string>
+    <string name="mic_hint" formatted="false">"Allow microphone access in Settings to identify birds."</string>
+    <string name="settings" formatted="false">"Open Settings"</string>
+    <string name="back" formatted="false">"Back"</string>
+    <string name="mic_denied" formatted="false">"Microphone access denied"</string>
+    <string name="mic_retry" formatted="false">"Try again or allow microphone access in Settings."</string>
+    <string name="listening_time" formatted="false">"Listening %d:%02d"</string>
+    <string name="no_candidate" formatted="false">"No confident matches yet"</string>
+    <string name="possible" formatted="false">"Possible matches"</string>
+    <string name="uncertain" formatted="false">"Low confidence · Unconfirmed"</string>
+    <string name="saved" formatted="false">"\nSaved"</string>
+    <string name="stopped" formatted="false">"Listening stopped"</string>
+    <string name="live" formatted="false">"LIVE BIRD DETECTION"</string>
+    <string name="loading_model" formatted="false">"Loading model…"</string>
+    <string name="last_bird" formatted="false">"Last heard"</string>
+    <string name="stop" formatted="false">"■  Stop listening"</string>
+    <string name="session" formatted="false">"This session"</string>
+    <string name="entry" formatted="false">"%s · %s\nConfidence %.0f%%"</string>
+    <string name="session_time" formatted="false">"This session "</string>
+    <string name="no_session" formatted="false">"No matches yet"</string>
+    <string name="photo_loading">"Loading photo…"</string>
+    <string name="photo_unavailable">"Photo unavailable\nOffline or no licensed photo found"</string>
+    <string name="photo_description" formatted="false">" photo"</string>
+    <string name="again" formatted="false">"Listen again"</string>
+    <string name="retry" formatted="false">"Try again"</string>
+    <string name="history_title" formatted="false">"Bird history"</string>
+    <string name="empty_history" formatted="false">"No records yet\nStart listening to find birds"</string>
+    <string name="clear_history" formatted="false">"Clear history"</string>
+    <string name="clear_confirm" formatted="false">"Clear all identification history?"</string>
+    <string name="cancel" formatted="false">"Cancel"</string>
+    <string name="clear" formatted="false">"Clear"</string>
+    <string name="about_title" formatted="false">"ABOUT BIRDWATCH"</string>
+    <string name="model_info" formatted="false">"Unofficial Wear OS app\nBirdNET v2.4 · 6,522 classes"</string>
+    <string name="privacy" formatted="false">"Listening records and analyzes continuously until you stop or leave. Audio stays in memory and is never saved or uploaded. Identification history stays on this watch and can be cleared."</string>
+    <string name="model_license" formatted="false">"Model: Cornell Lab of Ornithology and Chemnitz University of Technology. CC BY-NC-SA 4.0. Noncommercial use only."</string>
+    <string name="photo_info" formatted="false">"Species details link to Cornell eBird. Photos from iNaturalist use CC0, CC BY or CC BY-NC licenses with attribution."</string>
+    <string name="network_privacy" formatted="false">"Photo lookups send only the scientific name, never audio or location. Photos use the available watch network, including phone connectivity provided by Wear OS. Offline audio identification continues. Photos and credits are cached locally (up to 20 MB); clear them from Photo cache."</string>
+    <string name="wave_description" formatted="false">"Recording level and progress"</string>
+    <string name="confidence" formatted="false">"Detection confidence %.0f%%"</string>
+    <string name="open_ebird" formatted="false">"eBird on phone"</string>
+    <string name="opening_phone" formatted="false">"Opening on phone…"</string>
+    <string name="sent_check" formatted="false">"Sent. Check your phone."</string>
+    <string name="ebird_missing" formatted="false">"No matching eBird page found"</string>
+    <string name="reference_description" formatted="false">" photo"</string>
+    <string name="phone_retry">"Connect and unlock your phone, then retry."</string>
+    <string name="open_retry">"Could not open. Try again."</string>
+    <string name="ui_language" formatted="false">"App language"</string>
+    <string name="language_menu" formatted="false">"App language · "</string>
+    <string name="choose_ui" formatted="false">"App language"</string>
+    <string name="ui_hint" formatted="false">"Changes the interface only, not bird names."</string>
+    <string name="scientific" formatted="false">"Scientific names"</string>
+    <string name="stream_error" formatted="false">"Recording or analysis failed. Please try again."</string>
+    <string name="photo_cache" formatted="false">"Photo cache"</string>
+    <string name="cache_loading" formatted="false">"Reading cache…"</string>
+    <string name="cache_size" formatted="false">"%d photos · %.1f / 20 MB"</string>
+    <string name="cache_hint" formatted="false">"Photos and credits stay on this watch for offline use, including after restarting. Limited to 20 MB / 100 species; least recently used photos are removed first. Clearing does not affect history."</string>
+    <string name="cache_clear" formatted="false">"Clear photo cache"</string>
+    <string name="cache_cleared" formatted="false">"Photo cache cleared"</string>
+    <string name="cache_clear_failed" formatted="false">"Some cached files could not be removed. Try again."</string>
+    <string name="geo_menu" formatted="false">"Location filter · "</string>
+    <string name="geo_on" formatted="false">"On"</string>
+    <string name="geo_off" formatted="false">"Off"</string>
+    <string name="geo_title" formatted="false">"Location &amp; season"</string>
+    <string name="geo_hint" formatted="false">"Requests one location when listening starts, with a 30-second timeout. Recording continues. An offline range model uses location and date to filter candidates at 3% occurrence, without changing audio confidence. Approximate location works; unavailable location falls back to audio only. Turn off to look for rare or out-of-range birds."</string>
+    <string name="geo_pending" formatted="false">"Finding location · Audio continues"</string>
+    <string name="geo_disabled" formatted="false">"Location filter off · Audio only"</string>
+    <string name="geo_no_permission" formatted="false">"Location not allowed · Audio only"</string>
+    <string name="geo_unavailable" formatted="false">"Location filter unavailable · Audio only"</string>
+    <string name="geo_building" formatted="false">"Preparing local species list…"</string>
+    <string name="geo_active" formatted="false">"Location filter active · %d classes"</string>
+    <string name="geo_privacy" formatted="false">"One location per listening session is used only for on-watch location and season filtering. Coordinates are never stored or uploaded. No background location tracking. Audio-only results appear while location is pending or unavailable; earlier records are not changed retroactively."</string>
+    <string name="photo_caption">"%1$s\niNaturalist"</string>
+    <string name="language_chinese">中文</string>
+    <string name="app_settings">Settings</string>
+    <string name="history_entry">"%1$s\n%2$s"</string>
+</resources>

@@ -1,0 +1,5 @@
+eBird species link codes derived from BirdNET-Analyzer, MIT license.
+Source: https://github.com/birdnet-team/BirdNET-Analyzer/blob/main/birdnet_analyzer/eBird_taxonomy_codes_2024E.json
+Mapping taxonomy version: 2024E. Matched offline by scientific name to BirdNET v2.4 labels.
+Cornell eBird species pages are opened on the user's connected phone only after an explicit tap.
+BirdWatch is not an official Cornell, eBird, or Merlin application.
